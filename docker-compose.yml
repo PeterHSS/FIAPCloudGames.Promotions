@@ -1,0 +1,35 @@
+name: fgc-promotions
+
+services:
+  fiapcloudgames.promotions.api:
+    image: ${DOCKER_REGISTRY-}fiapcloudgamespromotionsapi
+    build:
+      context: .
+      dockerfile: FIAPCloudGames.Promotions.Api/Dockerfile
+    depends_on:
+      - fiapcloudgames.promotions.postgres
+    ports:
+      - "5003:8080"
+      - "5033:8081"
+    networks:
+      - fgc-network
+
+  fiapcloudgames.promotions.postgres:
+    image: postgres:17-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=fgc_promotions
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata_promotions:/var/lib/postgresql/data
+    networks:
+      - fgc-network
+
+volumes:
+  pgdata_promotions:
+  
+networks:
+    fgc-network:
+        external: true
